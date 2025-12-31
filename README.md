@@ -25,3 +25,24 @@
 1. Clone 本專案
 2. `npm install`
 3. `npm run dev`
+
+
+## 🟢 給跟我一樣不懂程式的朋友 (下載與安裝)
+
+如果你只是想用這個功能，請看這裡：
+
+1. **下載**：
+   在檔案列表中找到 `Threads-Video-Controller.zip` (或類似名稱的 .zip 檔)，點擊它，然後點擊右邊的 **Download** 按鈕下載。
+
+2. **解壓縮**：
+   將下載下來的 ZIP 檔案解壓縮，你會得到一個資料夾。
+
+3. **安裝到瀏覽器**：
+   - 打開 Chrome 或 Edge 瀏覽器。
+   - 在網址列輸入 `chrome://extensions` (Chrome) 或 `edge://extensions` (Edge) 並按 Enter。
+   - **關鍵步驟**：打開右上角的 **「開發人員模式」 (Developer mode)** 開關。
+   - 點擊左上角的 **「載入未封裝項目」 (Load unpacked)**。
+   - 選擇你剛剛 **步驟 2 解壓縮出來的那個資料夾** (注意是選資料夾，不是選檔案)。
+
+4. **完成！**
+   現在你可以去 Threads 或 IG 試試看了！
