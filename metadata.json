@@ -1,0 +1,5 @@
+{
+  "name": "Threads Video Controller Builder",
+  "description": "A tool to design and generate a Microsoft Edge/Chrome extension for controlling video playback (speed, volume, progress) on Threads.net.",
+  "requestFramePermissions": []
+}
