@@ -1,20 +1,27 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Threads Video Controller Source (AI Generated)
 
-# Run and deploy your AI Studio app
+這是一個嘗試優化 Threads 和 Instagram 網頁版影片播放體驗的專案。
 
-This contains everything you need to run your app locally.
+⚠️ **聲明 / Disclaimer**
+- 本專案程式碼 **100% 由 Google Gemini (AI Studio) 生成**。
+- 作者本人（我）**完全不懂程式碼**，只是負責貼上需求。
+- 目前希望能尋求大神協助優化。
 
-View your app in AI Studio: https://ai.studio/apps/drive/1wLNJFtSdWc0BYiT0l6FZWFgXqxzAMiZN
+## 專案目標 (Goals)
+1. **Instagram**：解決影片包含限動會被介面遮擋的問題。
+2. **Threads**：將影片控制器改為固定在底部 (Dock)，避免滑動時跑版。
+3. **快捷鍵**：支援鍵盤控制 (如 M 靜音)。(這個我沒叫AI做)
 
-## Run Locally
+## 请求協助 (Help Wanted)
+目前遇到的問題或想改進的地方：
+- [ ] 程式碼架構可能很亂，需要重構。
+- [ ] 在某些解析度下，控制器位置可能會跑掉。
+- [ ] (如果你有發現具體的 Bug，那我也沒辦法😂)
 
-**Prerequisites:**  Node.js
+如果您願意幫忙，非常感謝！
 
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## 如何開發 (Development)
+本專案使用 Vite + React + TypeScript。
+1. Clone 本專案
+2. `npm install`
+3. `npm run dev`
