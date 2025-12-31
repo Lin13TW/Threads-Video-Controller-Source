@@ -1,16 +1,16 @@
 # Threads Video Controller Source (AI Generated)
 
 這是一個嘗試優化 Threads 和 Instagram 網頁版影片播放體驗的專案。
+**Instagram**跟**Threads**的影片撥放器都很爛 不能快轉 
 
 ⚠️ **聲明 / Disclaimer**
 - 本專案程式碼 **100% 由 Google Gemini (AI Studio) 生成**。
 - 作者本人（我）**完全不懂程式碼**，只是負責貼上需求。
 - 目前希望能尋求大神協助優化。
 
-## 專案目標 (Goals)
+## 專案目前問題 
 1. **Instagram**：解決影片包含限動會被介面遮擋的問題。
-2. **Threads**：將影片控制器改為固定在底部 (Dock)，避免滑動時跑版。
-3. **快捷鍵**：支援鍵盤控制 (如 M 靜音)。(這個我沒叫AI做)
+2. **快捷鍵**：支援鍵盤控制 (如 M 靜音)。(這個我沒叫AI做)
 
 ## 请求協助 (Help Wanted)
 目前遇到的問題或想改進的地方：
@@ -46,3 +46,7 @@
 
 4. **完成！**
    現在你可以去 Threads 或 IG 試試看了！
+
+## 👀 效果預覽 (Screenshots)
+   <img width="1027" height="960" alt="image" src="https://github.com/user-attachments/assets/985c2526-4255-4e9e-9d79-5d8c38ec1576" />
+
