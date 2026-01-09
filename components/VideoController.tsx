@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { PlayIcon, PauseIcon, SpeakerWaveIcon, VolumeMuteIcon, MaximizeIcon } from '../icons';
+import { PlayIcon, PauseIcon, MaximizeIcon, RotateLeftIcon, RotateRightIcon } from '../icons';
 
 interface VideoControllerProps {
   videoRef: React.RefObject<HTMLVideoElement>;
@@ -9,10 +9,9 @@ export const VideoController: React.FC<VideoControllerProps> = ({ videoRef }) =>
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(1);
-  const [isMuted, setIsMuted] = useState(false);
   const [playbackRate, setPlaybackRate] = useState(1);
   const [isVisible, setIsVisible] = useState(false);
+  const [rotation, setRotation] = useState(0);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -22,25 +21,26 @@ export const VideoController: React.FC<VideoControllerProps> = ({ videoRef }) =>
     const handleDurationChange = () => setDuration(video.duration);
     const handlePlay = () => setIsPlaying(true);
     const handlePause = () => setIsPlaying(false);
-    const handleVolumeChange = () => {
-        setVolume(video.volume);
-        setIsMuted(video.muted);
-    };
 
     video.addEventListener('timeupdate', handleTimeUpdate);
     video.addEventListener('loadedmetadata', handleDurationChange);
     video.addEventListener('play', handlePlay);
     video.addEventListener('pause', handlePause);
-    video.addEventListener('volumechange', handleVolumeChange);
 
     return () => {
       video.removeEventListener('timeupdate', handleTimeUpdate);
       video.removeEventListener('loadedmetadata', handleDurationChange);
       video.removeEventListener('play', handlePlay);
       video.removeEventListener('pause', handlePause);
-      video.removeEventListener('volumechange', handleVolumeChange);
     };
   }, [videoRef]);
+
+  // Apply Rotation
+  useEffect(() => {
+    if (videoRef.current) {
+        videoRef.current.style.transform = `rotate(${rotation}deg)`;
+    }
+  }, [rotation, videoRef]);
 
   const togglePlay = useCallback(() => {
     if (videoRef.current) {
@@ -57,26 +57,19 @@ export const VideoController: React.FC<VideoControllerProps> = ({ videoRef }) =>
     }
   }, [videoRef]);
 
-  const handleVolume = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-      const vol = Number(e.target.value);
-      if(videoRef.current) {
-          videoRef.current.volume = vol;
-          videoRef.current.muted = vol === 0;
-      }
-  }, [videoRef]);
-
-  const toggleMute = useCallback(() => {
-      if(videoRef.current) {
-          videoRef.current.muted = !videoRef.current.muted;
-      }
-  }, [videoRef]);
-
   const handleSpeed = useCallback((rate: number) => {
     if (videoRef.current) {
       videoRef.current.playbackRate = rate;
       setPlaybackRate(rate);
     }
   }, [videoRef]);
+
+  const rotate = useCallback((direction: 'left' | 'right') => {
+      setRotation(prev => {
+          const delta = direction === 'left' ? -90 : 90;
+          return (prev + delta) % 360;
+      });
+  }, []);
 
   const handleFullscreen = useCallback(() => {
       if(videoRef.current) {
@@ -100,8 +93,8 @@ export const VideoController: React.FC<VideoControllerProps> = ({ videoRef }) =>
         onMouseEnter={() => setIsVisible(true)}
     >
       <div className={`
-        bg-black/80 backdrop-blur-md rounded-full px-4 py-2 border border-white/10 shadow-2xl
-        flex items-center gap-3 transition-opacity duration-300
+        bg-black/80 backdrop-blur-md rounded-full px-3 py-2 border border-white/10 shadow-2xl
+        flex items-center gap-2 transition-opacity duration-300
         ${isPlaying && !isVisible ? 'opacity-0 hover:opacity-100' : 'opacity-100'}
       `}>
         {/* Play/Pause */}
@@ -118,7 +111,7 @@ export const VideoController: React.FC<VideoControllerProps> = ({ videoRef }) =>
         </span>
 
         {/* Progress Bar */}
-        <div className="flex-1 relative group h-5 flex items-center">
+        <div className="flex-1 relative group h-5 flex items-center mx-1">
             <input
                 type="range"
                 min={0}
@@ -132,12 +125,13 @@ export const VideoController: React.FC<VideoControllerProps> = ({ videoRef }) =>
             />
         </div>
 
-        {/* Volume */}
-        <div className="flex items-center gap-2 group relative">
-             <button onClick={toggleMute} className="text-zinc-300 hover:text-white">
-                {isMuted || volume === 0 ? <VolumeMuteIcon className="w-4 h-4"/> : <SpeakerWaveIcon className="w-4 h-4"/>}
-             </button>
-        </div>
+        {/* Rotation */}
+        <button onClick={() => rotate('left')} className="text-zinc-400 hover:text-white p-1" title="Rotate Left">
+            <RotateLeftIcon className="w-4 h-4" />
+        </button>
+        <button onClick={() => rotate('right')} className="text-zinc-400 hover:text-white p-1" title="Rotate Right">
+            <RotateRightIcon className="w-4 h-4" />
+        </button>
 
         {/* Speed Selector */}
         <div className="relative">

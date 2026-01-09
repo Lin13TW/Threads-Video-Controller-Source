@@ -4,8 +4,8 @@ export const generateManifest = () => {
     {
       manifest_version: 3,
       name: "Threads Video Pro",
-      version: "12.1",
-      description: "v12.1: UI Refinement. Narrower blocker for IG (reveals tags/reply), Fixed Dock controller for Threads.",
+      version: "12.4",
+      description: "v12.4: Simplified Pro Control - Removed Volume controls, kept Speed/Rotation/Progress.",
       permissions: ["activeTab", "scripting", "storage"],
       action: {
         default_popup: "popup.html"
@@ -24,7 +24,7 @@ export const generateManifest = () => {
   );
 };
 
-export const generateStyles = () => `/* v12.1 Styles */`;
+export const generateStyles = () => `/* v12.4 Styles */`;
 
 export const generatePopupHTML = () => `<!DOCTYPE html>
 <html>
@@ -106,17 +106,19 @@ document.addEventListener('DOMContentLoaded', () => {
 `;
 
 export const generateContentScript = () => `
-// Threads Video Pro - Content Script v12.1
-// Strategy: "Surgical Shield" for IG, "Fixed Dock" for Threads.
+// Threads Video Pro - Content Script v12.4
+// Strategy: "Surgical Shield" + Rotation + No Volume
 
 (function() {
   if (window.TVP_INSTANCE) return;
   window.TVP_INSTANCE = true;
-  console.log('Threads Video Pro v12.1: Loaded');
+  console.log('Threads Video Pro v12.4: Loaded');
 
   let isEnabled = true;
   const isInstagram = window.location.hostname.includes('instagram.com');
   const isThreads = window.location.hostname.includes('threads');
+  
+  const rotationMap = new WeakMap(); 
 
   // --- 0. CSS: Hide Native Controls (Visual only) ---
   const styleEl = document.createElement('style');
@@ -148,13 +150,11 @@ export const generateContentScript = () => `
   style.textContent = \`
     :host { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
     
-    /* THE FOOTER BLOCKER (IG Only mostly) */
     #footer-blocker {
       position: absolute;
-      background: transparent; /* Invisible */
-      /* background: rgba(255,0,0,0.3); /* Debug: Red Tint */
+      background: transparent; 
       cursor: default;
-      pointer-events: auto; /* Catch clicks */
+      pointer-events: auto;
       display: none;
       z-index: 1000; 
     }
@@ -162,13 +162,13 @@ export const generateContentScript = () => `
     #ctrl {
       background: rgba(10, 10, 10, 0.9);
       backdrop-filter: blur(10px);
-      padding: 0 18px;
-      height: 46px;
+      padding: 0 12px;
+      height: 42px;
       border-radius: 999px;
       
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 8px;
       
       border: 1px solid rgba(255, 255, 255, 0.15);
       box-shadow: 0 8px 32px rgba(0,0,0,0.7);
@@ -186,6 +186,7 @@ export const generateContentScript = () => `
       visibility: visible;
     }
 
+    /* Common Button Style */
     button {
       background: transparent;
       border: none;
@@ -195,25 +196,25 @@ export const generateContentScript = () => `
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 30px;
-      height: 30px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
     }
     button:hover { background: rgba(255, 255, 255, 0.2); color: #fff; }
     button:active { transform: scale(0.9); }
 
     .time {
-      font-size: 12px;
+      font-size: 11px;
       font-variant-numeric: tabular-nums;
       color: #bbb;
-      min-width: 38px;
+      min-width: 34px;
       text-align: center;
       font-weight: 500;
     }
 
     .slider-box {
-      width: 180px;
-      height: 46px;
+      width: 150px;
+      height: 42px;
       display: flex;
       align-items: center;
       position: relative;
@@ -233,8 +234,8 @@ export const generateContentScript = () => `
     
     input[type=range]::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 12px;
-      height: 12px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
       background: #fff;
       box-shadow: 0 1px 4px rgba(0,0,0,0.5);
@@ -249,12 +250,12 @@ export const generateContentScript = () => `
       color: #eee;
       border: none;
       border-radius: 4px;
-      padding: 2px 6px;
-      font-size: 11px;
+      padding: 0 4px;
+      font-size: 10px;
       font-weight: bold;
       outline: none;
       cursor: pointer;
-      height: 24px;
+      height: 22px;
     }
     select:hover { background: rgba(255,255,255,0.3); color: #fff; }
     select option { background: #111; color: #fff; }
@@ -263,10 +264,10 @@ export const generateContentScript = () => `
 
   // --- 3. UI Template ---
   const svgs = {
-    play: '<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>',
-    pause: '<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>',
-    vol: '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>',
-    mute: '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>'
+    play: '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>',
+    pause: '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>',
+    rotL: '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M4.755 10.059a7.5 7.5 0 0112.548-3.364l1.903 1.903h-3.183a.75.75 0 100 1.5h4.992a.75.75 0 00.75-.75V4.356a.75.75 0 00-1.5 0v3.18l-1.9-1.9A9 9 0 003.306 9.67a.75.75 0 101.45.388zm15.408 3.352a.75.75 0 00-.919.53 7.5 7.5 0 01-12.548 3.364l-1.902-1.903h3.183a.75.75 0 000-1.5H2.984a.75.75 0 00-.75.75v4.992a.75.75 0 001.5 0v-3.18l1.9 1.9a9 9 0 0015.059-4.035.75.75 0 00-.53-.918z"/></svg>',
+    rotR: '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.245 10.059a7.5 7.5 0 00-12.548-3.364l-1.903 1.903h3.183a.75.75 0 110 1.5H2.985a.75.75 0 01-.75-.75V4.356a.75.75 0 011.5 0v3.18l1.9-1.9A9 9 0 0120.694 9.67a.75.75 0 01-1.45.388zm-15.408 3.352a.75.75 0 01.919.53 7.5 7.5 0 0012.548 3.364l1.902-1.903h-3.183a.75.75 0 110-1.5h4.992a.75.75 0 01.75.75v4.992a.75.75 0 01-1.5 0v-3.18l-1.9 1.9a9 9 0 01-15.059-4.035.75.75 0 01.53-.918z"/></svg>'
   };
 
   const wrapper = document.createElement('div');
@@ -276,16 +277,19 @@ export const generateContentScript = () => `
         <button id="btn-play">\${svgs.play}</button>
         <div class="time" id="lbl-time">0:00</div>
         <div class="slider-box">
-        <input type="range" id="inp-seek" min="0" max="100" step="0.1" value="0">
+           <input type="range" id="inp-seek" min="0" max="100" step="0.1" value="0">
         </div>
+        
+        <button id="btn-rot-l" title="Rotate Left 90°">\${svgs.rotL}</button>
+        <button id="btn-rot-r" title="Rotate Right 90°">\${svgs.rotR}</button>
+
         <select id="sel-rate">
-        <option value="0.5">0.5x</option>
-        <option value="1" selected>1x</option>
-        <option value="1.5">1.5x</option>
-        <option value="2">2x</option>
-        <option value="3">3x</option>
+          <option value="0.5">0.5x</option>
+          <option value="1" selected>1x</option>
+          <option value="1.5">1.5x</option>
+          <option value="2">2x</option>
+          <option value="3">3x</option>
         </select>
-        <button id="btn-vol">\${svgs.vol}</button>
     </div>
   \`;
   shadow.appendChild(wrapper);
@@ -299,7 +303,8 @@ export const generateContentScript = () => `
     time: $('lbl-time'),
     seek: $('inp-seek'),
     rate: $('sel-rate'),
-    vol: $('btn-vol')
+    rotL: $('btn-rot-l'),
+    rotR: $('btn-rot-r')
   };
 
   let activeVideo = null;
@@ -333,8 +338,6 @@ export const generateContentScript = () => `
 
   ui.blocker.onclick = stop;
   ui.blocker.onmousedown = stop;
-  ui.blocker.onmouseup = stop;
-  ui.blocker.ondblclick = stop;
   
   ui.ctrl.onmouseenter = () => clearTimeout(hideTimeout);
   ui.ctrl.onmouseleave = () => startHide(500);
@@ -347,15 +350,20 @@ export const generateContentScript = () => `
       }
   };
 
-  ui.vol.onclick = (e) => {
-      stop(e);
-      if(activeVideo) {
-          const m = activeVideo.muted || activeVideo.volume === 0;
-          if (m) { activeVideo.muted = false; activeVideo.volume = 1; }
-          else { activeVideo.muted = true; }
-          updateState();
-      }
+  // Rotation Logic
+  const doRotate = (dir) => {
+      if(!activeVideo) return;
+      let cur = rotationMap.get(activeVideo) || 0;
+      cur = dir === 'l' ? cur - 90 : cur + 90;
+      cur = cur % 360;
+      rotationMap.set(activeVideo, cur);
+      activeVideo.style.transform = \`rotate(\${cur}deg)\`;
   };
+
+  ui.rotL.onclick = (e) => { stop(e); doRotate('l'); };
+  ui.rotR.onclick = (e) => { stop(e); doRotate('r'); };
+  ui.rotL.onmousedown = stop;
+  ui.rotR.onmousedown = stop;
 
   ui.rate.onchange = (e) => {
       if(activeVideo) activeVideo.playbackRate = parseFloat(e.target.value);
@@ -402,7 +410,7 @@ export const generateContentScript = () => `
               activeVideo = found;
               activeVideo.addEventListener('play', updateState);
               activeVideo.addEventListener('pause', updateState);
-              activeVideo.addEventListener('volumechange', updateState);
+              // removed volumechange listener
               showAll();
           } else {
               showAll();
@@ -418,6 +426,14 @@ export const generateContentScript = () => `
       
       const r = activeVideo.getBoundingClientRect();
       
+      // Restore rotation if exists
+      const savedRot = rotationMap.get(activeVideo);
+      if(savedRot !== undefined) {
+         if(activeVideo.style.transform !== \`rotate(\${savedRot}deg)\`) {
+             activeVideo.style.transform = \`rotate(\${savedRot}deg)\`;
+         }
+      }
+      
       // --- Threads: Fixed Dock Mode ---
       if (isThreads) {
         ui.ctrl.style.position = 'fixed';
@@ -425,28 +441,20 @@ export const generateContentScript = () => `
         ui.ctrl.style.left = '50%';
         ui.ctrl.style.transform = 'translateX(-50%)';
         ui.ctrl.classList.add('show');
-        
-        // No blocker for Threads usually needed, or minimal
         ui.blocker.style.display = 'none'; 
       } 
-      
-      // --- Instagram: Floating Mode with Surgical Blocker ---
+      // --- Instagram: Floating Mode ---
       else {
         ui.ctrl.style.position = 'absolute';
-        
-        // 1. Position Blocker (Surgical Shield)
-        // Only width 40% to allow clicking tags (left) and share (right)
-        // Positioned slightly higher to avoid Reply input
         const bWidth = r.width * 0.4; 
-        const bLeft = r.left + (r.width * 0.3); // Center it (30% left offset + 40% width + 30% right space)
+        const bLeft = r.left + (r.width * 0.3);
         
         ui.blocker.style.display = 'block';
         ui.blocker.style.width = bWidth + 'px';
         ui.blocker.style.height = '50px'; 
-        ui.blocker.style.top = (r.bottom - 60) + 'px'; // Sit just above very bottom
+        ui.blocker.style.top = (r.bottom - 60) + 'px';
         ui.blocker.style.left = bLeft + 'px';
 
-        // 2. Position Controller
         ui.ctrl.style.top = (r.bottom - 70) + 'px'; 
         ui.ctrl.style.left = (r.left + (r.width/2)) + 'px';
         ui.ctrl.style.transform = 'translateX(-50%)';
@@ -470,18 +478,13 @@ export const generateContentScript = () => `
   function updateState() {
       if(!activeVideo) return;
       ui.play.innerHTML = activeVideo.paused ? svgs.play : svgs.pause;
-      const isMuted = activeVideo.muted || activeVideo.volume === 0;
-      ui.vol.innerHTML = isMuted ? svgs.mute : svgs.vol;
   }
 
   function loop() {
       if(isEnabled && activeVideo && ui.ctrl.classList.contains('show')) {
           if(activeVideo.hasAttribute('controls')) activeVideo.removeAttribute('controls');
           
-          if (isThreads) {
-              // Threads: Controller is fixed, no updates needed per frame for position
-          } else {
-             // IG: Update positions
+          if (!isThreads) {
              const r = activeVideo.getBoundingClientRect();
              const bWidth = r.width * 0.4; 
              const bLeft = r.left + (r.width * 0.3);

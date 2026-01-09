@@ -32,6 +32,18 @@ export const SpeakerWaveIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+export const RotateLeftIcon = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <path fillRule="evenodd" d="M4.755 10.059a7.5 7.5 0 0112.548-3.364l1.903 1.903h-3.183a.75.75 0 100 1.5h4.992a.75.75 0 00.75-.75V4.356a.75.75 0 00-1.5 0v3.18l-1.9-1.9A9 9 0 003.306 9.67a.75.75 0 101.45.388zm15.408 3.352a.75.75 0 00-.919.53 7.5 7.5 0 01-12.548 3.364l-1.902-1.903h3.183a.75.75 0 000-1.5H2.984a.75.75 0 00-.75.75v4.992a.75.75 0 001.5 0v-3.18l1.9 1.9a9 9 0 0015.059-4.035.75.75 0 00-.53-.918z" clipRule="evenodd" />
+  </svg>
+);
+
+export const RotateRightIcon = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <path fillRule="evenodd" d="M19.245 10.059a7.5 7.5 0 00-12.548-3.364l-1.903 1.903h3.183a.75.75 0 110 1.5H2.985a.75.75 0 01-.75-.75V4.356a.75.75 0 011.5 0v3.18l1.9-1.9A9 9 0 0120.694 9.67a.75.75 0 01-1.45.388zm-15.408 3.352a.75.75 0 01.919.53 7.5 7.5 0 0012.548 3.364l1.902-1.903h-3.183a.75.75 0 110-1.5h4.992a.75.75 0 01.75.75v4.992a.75.75 0 01-1.5 0v-3.18l-1.9 1.9a9 9 0 01-15.059-4.035.75.75 0 01.53-.918z" clipRule="evenodd" />
+  </svg>
+);
+
 export const CodeIcon = ({ className }: { className?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={className}>
     <path fillRule="evenodd" d="M14.447 3.027a.75.75 0 01.527.92l-4.5 16.5a.75.75 0 01-1.448-.394l4.5-16.5a.75.75 0 01.921-.526zM16.72 6.22a.75.75 0 011.06 0l5.25 5.25a.75.75 0 010 1.06l-5.25 5.25a.75.75 0 11-1.06-1.06L21.44 12l-4.72-4.72a.75.75 0 010-1.06zm-9.44 0a.75.75 0 010 1.06L2.56 12l4.72 4.72a.75.75 0 11-1.06 1.06L.97 12.53a.75.75 0 010-1.06l5.25-5.25a.75.75 0 011.06 0z" clipRule="evenodd" />
