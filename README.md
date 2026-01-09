@@ -34,7 +34,7 @@
 如果你只是想用這個功能，請看這裡：
 
 1. **下載**：
-   在檔案列表中找到 `Threads-Video-Controller.zip` (或類似名稱的 .zip 檔)，點擊它，然後點擊右邊的 **Download** 按鈕下載。
+   在檔案列表中找到 `threads-video-controller-v1.1.zip` (或類似名稱的 .zip 檔)，點擊它，然後點擊右邊的 **Download** 按鈕下載。
 
 2. **解壓縮**：
    將下載下來的 ZIP 檔案解壓縮，你會得到一個資料夾。
